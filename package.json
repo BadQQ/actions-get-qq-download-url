@@ -6,13 +6,13 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint .",
-    "build": "esbuild index.js --bundle --minify --platform=node --sourcemap --outfile=dist/index.js",
-    "dev": "esbuild index.js --bundle --platform=node --sourcemap --outfile=dist/index.js"
+    "build": "esbuild index.js --bundle --minify --target=node12 --platform=node --sourcemap --outfile=dist/index.js",
+    "dev": "esbuild index.js --bundle --sourcemap --target=node12 --platform=node --outfile=dist/index.js"
   },
   "license": "MIT",
   "dependencies": {
     "@actions/core": "^1.6.0",
-    "node-fetch": "^3.1.0"
+    "node-fetch": "2"
   },
   "devDependencies": {
     "esbuild": "^0.13.14",
