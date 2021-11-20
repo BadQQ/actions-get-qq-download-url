@@ -1,0 +1,12 @@
+name: 'Extract QQ Download Link'
+description: 'Extract QQ Android download link from download page'
+outputs: 
+  url:
+    description: 'The URL of target APK'
+  version:
+    description: 'Server returned latest version'
+  update_date:
+    description: 'Last updated'
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
