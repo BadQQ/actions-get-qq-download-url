@@ -2,9 +2,6 @@ import core from '@actions/core'
 import fetch from 'node-fetch'
 
 const qqJsRegex = /window\.__INITIAL_STATE__=({.+})/;
-const jsonHeader = {
-    "Content-Type": "application/json"
-};
 
 async function run() {
     try {
@@ -20,6 +17,9 @@ async function run() {
         }
 
         const qqJson = JSON.parse(qqRawJson[1]);
+        if (!qqJson) {
+            throw new Error("Unable to parse initial state")
+        }
         const androidQQ = qqJson['rainbowConfig']['products']['mQQ']['andQQ'];
 
         const response = {
