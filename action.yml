@@ -8,5 +8,5 @@ outputs:
   update_date:
     description: 'Last updated'
 runs:
-  using: 'node12'
+  using: 'node16'
   main: 'dist/index.js'
