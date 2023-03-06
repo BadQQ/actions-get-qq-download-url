@@ -1,39 +1,37 @@
 import core from '@actions/core'
 import fetch from 'node-fetch'
 
-const qqJsRegex = /window\.__INITIAL_STATE__=({.+})/;
+const qqJsFileReg = /https:\/\/[\w\-\.\/]+\/js\/pc.+?\.js/g
+const qqApkUrlReg = /https:\/\/down\.qq\.com\/qqweb\/QQ_1\/android_apk\/Android_.*\.apk/g
 
 async function run() {
     try {
-        const qqHtmlContent = await fetch("https://im.qq.com/download", {
+        const qqHtmlContent = await fetch("https://im.qq.com/index/", {
             headers: {
-                "User-Agent": 
+                "User-Agent":
                     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36"
             }
         });
-        const qqRawJson = qqJsRegex.exec(await qqHtmlContent.text());
-        if (!qqRawJson) {
+        const qqJsFileUrl = qqJsFileReg.exec(await qqHtmlContent.text());
+
+        if (!qqJsFileUrl) {
             throw new Error("Unable to find initial state")
         }
 
-        const qqJson = JSON.parse(qqRawJson[1]);
-        if (!qqJson) {
-            throw new Error("Unable to parse initial state")
+        const jsFileContnet = await fetch(qqJsFileUrl[0], {
+            headers: {
+                "User-Agent":
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36"
+            }
+        });
+
+        const qqApkUrl = qqApkUrlReg.exec(await jsFileContnet.text())
+        if (!qqApkUrl) {
+            throw new Error("Unable to find APK URL")
         }
-        const androidQQ = qqJson['rainbowConfig']['products']['mQQ']['andQQ'];
 
-        const response = {
-            version: androidQQ['version'].trim(),
-            feature: androidQQ['feature'].map(s => s.trim()),
-            updateDate: androidQQ['updateDate'].trim(),
-            downloadUrl: androidQQ['downloadUrl'].trim()
-        };
-
-        core.info(`Version: ${response.version}\nFeatures: ${response.feature.join(', ')}\nDate: ${response.updateDate}\nURL: ${response.downloadUrl}`)
-
-        core.setOutput('version', response.version)
-        core.setOutput('update_date', response.updateDate)
-        core.setOutput('url', response.downloadUrl)
+        console.log(qqApkUrl[0])
+        core.setOutput('url', qqApkUrl[0])
     } catch (e) {
         core.setFailed(e)
     }
