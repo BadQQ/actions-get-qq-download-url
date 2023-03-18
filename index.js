@@ -2,7 +2,7 @@ import core from '@actions/core'
 import fetch from 'node-fetch'
 
 const qqJsFileReg = /https:\/\/[\w\-\.\/]+\/js\/pc.+?\.js/g
-const qqApkUrlReg = /https:\/\/down\.qq\.com\/qqweb\/QQ_1\/android_apk\/Android_.*\.apk/g
+const qqApkUrlReg = /https:\/\/down.*android_apk\/Android_.*\.apk/g
 
 async function run() {
     try {
